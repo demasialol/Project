@@ -196,7 +196,6 @@
         android:id="@+id/Next"
         android:layout_width="392dp"
         android:layout_height="49dp"
-        android:layout_marginBottom="12dp"
         android:text="Confirm and head next page"
         app:layout_constraintBottom_toTopOf="@+id/changeProfile"
         app:layout_constraintEnd_toEndOf="parent"

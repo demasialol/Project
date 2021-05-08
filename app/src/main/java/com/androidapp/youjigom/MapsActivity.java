@@ -39,8 +39,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        String[][] locations = {
+
+                {"40.0424870042855", "116.38425286915037", "베이징"},
+                {"35.74306540022329", "139.77245318272045", "도쿄"},
+                {"37.557667", "126.926546", "서울시"}
+
+        };
+        for (int i = 0; i < 3; i++) {
+            // 위치 설정
+            double lat = Double.parseDouble(locations[i][0]);
+            double lon = Double.parseDouble(locations[i][1]);
+            LatLng latLng = new LatLng(lat, lon);
+            //LatLng latLng = new LatLng(37.557667, 126.926546);
+
+            // 카메라를 설정 위치로 옮긴다
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            // 카메라 줌 정도를 설정한다
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo(10));
+            //구글 맵에 표시할 마커에 대한 옵션 설정
+            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(locations[i][2]);
+            // 마커 생성
+            googleMap.addMarker(markerOptions);
+        }
+
     }
 }
