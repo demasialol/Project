@@ -33,17 +33,31 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import androidx.fragment.app.FragmentActivity;
+
+import android.os.Bundle;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 
 import javax.annotation.Nullable;
 
-public class MainActivity extends AppCompatActivity {
-    private static final int GALLERY_INTENT_CODE = 1023 ;
-    TextView fullName,email,phone,verifyMsg;
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private GoogleMap googleMap;
+    private static final int GALLERY_INTENT_CODE = 1023;
+    TextView fullName, email, phone, verifyMsg;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
     Button resendCode;
-    Button resetPassLocal,changeProfileImage;
+    Button Next;
+    Button resetPassLocal, changeProfileImage;
     FirebaseUser user;
     ImageView profileImage;
     StorageReference storageReference;
@@ -55,18 +69,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         phone = findViewById(R.id.profilePhone);
         fullName = findViewById(R.id.profileName);
-        email    = findViewById(R.id.profileEmail);
+        email = findViewById(R.id.profileEmail);
         resetPassLocal = findViewById(R.id.resetPasswordLocal);
 
         profileImage = findViewById(R.id.profileImage);
         changeProfileImage = findViewById(R.id.changeProfile);
+        Next = findViewById(R.id.Next);
 
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        StorageReference profileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/profile.jpg");
+        StorageReference profileRef = storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/profile.jpg");
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -81,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         userId = fAuth.getCurrentUser().getUid();
         user = fAuth.getCurrentUser();
 
-        if(!user.isEmailVerified()){
+        if (!user.isEmailVerified()) {
             verifyMsg.setVisibility(View.VISIBLE);
             resendCode.setVisibility(View.VISIBLE);
 
@@ -105,20 +120,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
-
         DocumentReference documentReference = fStore.collection("users").document(userId);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(documentSnapshot.exists()){
+                if (documentSnapshot.exists()) {
                     phone.setText(documentSnapshot.getString("phone"));
                     fullName.setText(documentSnapshot.getString("fName"));
                     email.setText(documentSnapshot.getString("email"));
 
-                }else {
+                } else {
                     Log.d("tag", "onEvent: Document do not exists");
                 }
+            }
+        });
+
+        Next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),MapsActivity.class));
             }
         });
 
@@ -169,10 +189,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // open gallery
-                Intent i = new Intent(v.getContext(),EditProfile.class);
-                i.putExtra("fullName",fullName.getText().toString());
-                i.putExtra("email",email.getText().toString());
-                i.putExtra("phone",phone.getText().toString());
+                Intent i = new Intent(v.getContext(), EditProfile.class);
+                i.putExtra("fullName", fullName.getText().toString());
+                i.putExtra("email", email.getText().toString());
+                i.putExtra("phone", phone.getText().toString());
                 startActivity(i);
 //
 
@@ -183,13 +203,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();//logout
-        startActivity(new Intent(getApplicationContext(),Login.class));
+        startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
 
 
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        String[][] locations = {
+                {"37.557667", "126.926546", "서울시"},
+                {"40.0424870042855", "116.38425286915037", "베이징"},
+                {"35.74306540022329", "139.77245318272045", "도쿄"}
+        };
+
+        for (int i = 0; i < 3; i++) {
+            // 위치 설정
+            double lat = Double.parseDouble(locations[i][0]);
+            double lon = Double.parseDouble(locations[i][1]);
+            LatLng latLng = new LatLng(lat, lon);
+            //LatLng latLng = new LatLng(37.557667, 126.926546);
+
+            // 카메라를 설정 위치로 옮긴다
+            //googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            // 카메라 줌 정도를 설정한다
+            //googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+            //구글 맵에 표시할 마커에 대한 옵션 설정
+            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(locations[i][2]);
+            // 마커 생성
+            googleMap.addMarker(markerOptions);
+        }
+    }
 }
