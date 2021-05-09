@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap googleMap;
     private static final int GALLERY_INTENT_CODE = 1023;
-    TextView fullName, email, phone, verifyMsg;
+    TextView fullName, email, phone, verifyMsg, country;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         phone = findViewById(R.id.profilePhone);
         fullName = findViewById(R.id.profileName);
         email = findViewById(R.id.profileEmail);
+        country = findViewById(R.id.profileCountry);
         resetPassLocal = findViewById(R.id.resetPasswordLocal);
 
         profileImage = findViewById(R.id.profileImage);
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     phone.setText(documentSnapshot.getString("phone"));
                     fullName.setText(documentSnapshot.getString("fName"));
                     email.setText(documentSnapshot.getString("email"));
+                    country.setText(documentSnapshot.getString("country"));
 
                 } else {
                     Log.d("tag", "onEvent: Document do not exists");
