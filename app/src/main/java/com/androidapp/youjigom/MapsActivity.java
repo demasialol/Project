@@ -2,9 +2,11 @@ package com.androidapp.youjigom;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FirebaseUser user;
     ImageView profileImage;
     StorageReference storageReference;
+    Button profile;
 
     private GoogleMap mMap;
 
@@ -61,6 +64,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
+        profile = findViewById(R.id.profile);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            }
+        });
+
+
         StorageReference profileRef = storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/profile.jpg");
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -78,6 +90,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
             }
+
+
         });
     }
 

@@ -33,7 +33,7 @@ import java.util.Map;
 public class EditProfile extends AppCompatActivity {
 
     public static final String TAG = "TAG";
-    EditText profileFullName,profileEmail,profilePhone,profileCountry;
+    EditText profileFullName,profileEmail,profilePhone;
     ImageView profileImageView;
     Button saveBtn;
     FirebaseAuth fAuth;
@@ -51,7 +51,9 @@ public class EditProfile extends AppCompatActivity {
         final String fullName = data.getStringExtra("fullName");
         String email = data.getStringExtra("email");
         String phone = data.getStringExtra("phone");
-        final String country = data.getStringExtra("country");
+
+
+
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -59,10 +61,11 @@ public class EditProfile extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
 
         profileFullName = findViewById(R.id.profileFullName);
-        profileCountry = findViewById(R.id.profileCountry);
         profileEmail = findViewById(R.id.profileEmailAddress);
         profilePhone = findViewById(R.id.profilePhoneNo);
         profileImageView = findViewById(R.id.profileImageView);
+
+
         saveBtn = findViewById(R.id.saveProfileInfo);
 
         StorageReference profileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/profile.jpg");
@@ -84,7 +87,7 @@ public class EditProfile extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(profileFullName.getText().toString().isEmpty() || profileEmail.getText().toString().isEmpty() || profilePhone.getText().toString().isEmpty()){
+                if(profileFullName.getText().toString().isEmpty() || profileEmail.getText().toString().isEmpty() || profilePhone.getText().toString().isEmpty() ){
                     Toast.makeText(EditProfile.this, "One or Many fields are empty.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -98,7 +101,11 @@ public class EditProfile extends AppCompatActivity {
                         edited.put("email",email);
                         edited.put("fName",profileFullName.getText().toString());
                         edited.put("phone",profilePhone.getText().toString());
-                        edited.put("country",profileCountry.getText().toString());
+
+
+
+
+
                         docRef.update(edited).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -123,9 +130,12 @@ public class EditProfile extends AppCompatActivity {
         profileEmail.setText(email);
         profileFullName.setText(fullName);
         profilePhone.setText(phone);
-        profileCountry.setText(country);
 
-        Log.d(TAG, "onCreate: " + fullName + " " + email + " " + phone);
+
+
+
+
+        Log.d(TAG, "onCreate: " + fullName + " " + email + " " + phone + "" );
     }
 
 

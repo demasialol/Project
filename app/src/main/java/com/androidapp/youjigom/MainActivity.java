@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
-    Button resendCode;
+    Button resendCode, changeProfile;
     Button Next;
     Button resetPassLocal, changeProfileImage;
     FirebaseUser user;
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         email = findViewById(R.id.profileEmail);
         country = findViewById(R.id.profileCountry);
         resetPassLocal = findViewById(R.id.resetPasswordLocal);
+        changeProfile = findViewById(R.id.changeProfile);
 
         profileImage = findViewById(R.id.profileImage);
         changeProfileImage = findViewById(R.id.changeProfile);
@@ -192,13 +193,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // open gallery
+                startActivity(new Intent(getApplicationContext(),EditProfile.class));
                 Intent i = new Intent(v.getContext(), EditProfile.class);
                 i.putExtra("fullName", fullName.getText().toString());
                 i.putExtra("email", email.getText().toString());
                 i.putExtra("phone", phone.getText().toString());
+                i.putExtra("Country", country.getText().toString());
                 startActivity(i);
-//
 
             }
         });
