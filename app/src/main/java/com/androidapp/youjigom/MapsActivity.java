@@ -16,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 
@@ -94,9 +95,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         });
     }
-
-
-
 
 
     /**
@@ -136,6 +134,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // 마커 생성
             googleMap.addMarker(markerOptions);
         }
+        googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
+        googleMap.setOnMarkerClickListener(this::OnMarkerClick);
+
+    }
+
+    public boolean OnMarkerClick(Marker marker) {
+        startActivity(new Intent(getApplicationContext(), CameraActivity.class));
+        return false;
     }
 }
