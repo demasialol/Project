@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.androidapp.youjigom">
 
     <!--
@@ -22,6 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YouJiGom">
 
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -34,11 +36,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA9LdVh7KCewfGlIt8qK7ErMhZgxt4vA6I" />
 
-
-
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps2"></activity>
+            android:label="@string/title_activity_maps2">
+        </activity>
+
         <activity android:name=".EditProfile"/>
         <activity android:name=".Login" />
         <activity android:name=".Register">
@@ -50,19 +52,10 @@
         </activity>
 
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".CameraActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <provider
@@ -76,6 +69,16 @@
                 android:resource="@xml/file_paths" />
 
         </provider>
+        <activity android:name=".Token"/>
+        <service
+            android:name=".MainActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
     </application>
 
 </manifest>

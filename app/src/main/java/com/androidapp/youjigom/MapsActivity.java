@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import javax.annotation.Nullable;
 
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     FirebaseFirestore fStore;
     TextView fullName, email, phone, country;
@@ -95,6 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         });
     }
+
+
 
 
     /**

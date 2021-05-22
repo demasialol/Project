@@ -124,11 +124,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        DocumentReference documentReference = fStore.collection("users").document(userId);
+       DocumentReference documentReference = fStore.collection("users").document(userId);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()) {
+                if (documentSnapshot != null && documentSnapshot.exists()) {
                     phone.setText(documentSnapshot.getString("phone"));
                     fullName.setText(documentSnapshot.getString("fName"));
                     email.setText(documentSnapshot.getString("email"));
