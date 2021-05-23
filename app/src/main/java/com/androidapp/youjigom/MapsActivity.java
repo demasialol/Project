@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -35,7 +36,7 @@ import javax.annotation.Nullable;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     FirebaseFirestore fStore;
-    TextView fullName, email, phone, country;
+    TextView fullName, email, phone, country, MyCountry;
     FirebaseAuth fAuth;
     String userId;
     FirebaseUser user;
@@ -44,7 +45,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Button profile;
 
     private GoogleMap mMap;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fullName = findViewById(R.id.profileName);
         email = findViewById(R.id.profileEmail);
         country = findViewById(R.id.profileCountry);
+        MyCountry = findViewById(R.id.MyCountry);
 
 
         fAuth = FirebaseAuth.getInstance();

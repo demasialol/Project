@@ -6,13 +6,19 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -25,6 +31,23 @@ import java.util.Map;
 
 public class Token extends AppCompatActivity {
     FirebaseFirestore fStore;
+
+    EditText mFullName;
+    EditText mEmail;
+    EditText mCountry;
+
+    private DatabaseReference mDatabase;
+
+    public Token(EditText mFullName, EditText mCountry) {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+    public Token(EditText mCountry, EditText mEmail, EditText mFullName) {
+        this.mFullName = mFullName;
+        this.mEmail= mEmail;
+        this.mCountry= mCountry;
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
