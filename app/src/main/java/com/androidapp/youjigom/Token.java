@@ -39,7 +39,7 @@ public class Token extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
-    public Token(EditText mFullName, EditText mCountry) {
+    public Token() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
     public Token(EditText mCountry, EditText mEmail, EditText mFullName) {
@@ -122,7 +122,7 @@ public class Token extends AppCompatActivity {
                         Map<String, String> PushToken = new HashMap<>();
                         PushToken.put("Token",token);
 
-                        DatabaseReference reference = fDatabase.getReference().child("users");
+                        DatabaseReference reference = fDatabase.getReference().child("users").child("fullName");
                         reference.push().child("Token").setValue(token);
                         //    reference.push().child("Email").setValue("1234@123.com");
                     }
