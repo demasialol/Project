@@ -1,5 +1,6 @@
 # Team_Project_share_file
-201721141 김규식 <br>
+<br>
+201721141 김규식 <br><br>
 <img src="https://github.com/demasialol/Team_Project_HW/blob/master/1.png?raw=true" width="900">
 <img src="https://github.com/demasialol/Team_Project_HW/blob/master/2.png?raw=true" width="900">
 <img src="https://github.com/demasialol/Team_Project_HW/blob/master/3.png?raw=true" width="900">
