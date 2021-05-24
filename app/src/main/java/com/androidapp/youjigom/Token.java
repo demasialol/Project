@@ -39,16 +39,14 @@ public class Token extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
-    public Token(EditText mFullName, EditText mCountry) {
+   /* public Token(EditText mFullName, EditText mCountry) {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
     public Token(EditText mCountry, EditText mEmail, EditText mFullName) {
         this.mFullName = mFullName;
         this.mEmail= mEmail;
         this.mCountry= mCountry;
-    }
-
-
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
