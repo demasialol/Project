@@ -172,7 +172,8 @@ public class Register extends AppCompatActivity {
 
                             databaseReference.child("users").push().setValue(fullName);
                             databaseReference.child("users").child("country").push().setValue(country);
-
+                            Token token = new Token();
+                            token.getToken();
                             startActivity(new Intent(getApplicationContext(),Token.class));
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
 

@@ -48,6 +48,9 @@ public class Token extends AppCompatActivity {
         this.mCountry= mCountry;
     }
 
+    public Token() {
+
+    }
 
 
     @Override
