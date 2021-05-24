@@ -6,5 +6,5 @@
     src="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAEfZ60tfoo&#x2F;view?embed">
   </iframe>
 </div>
-201721141 김규식 <a href="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAEfZ60tfoo&#x2F;view?utm_content=DAEfZ60tfoo&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener">김규식</a>
+201721141 김규식 <a href="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAEfZ60tfoo&#x2F;view?utm_content=DAEfZ60tfoo&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener"><br> press to open </a>
 <br><br>
