@@ -185,10 +185,9 @@ public class Register extends AppCompatActivity {
 
             }
 
+        //    Token token = new Token();
+        //    token.getToken(); //토큰 생성
         });
-
-
-
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override

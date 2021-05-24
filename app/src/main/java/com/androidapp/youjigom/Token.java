@@ -31,6 +31,7 @@ import java.util.Map;
 
 public class Token extends AppCompatActivity {
     FirebaseFirestore fStore;
+    FirebaseDatabase fDatabase;
 
     EditText mFullName;
     EditText mEmail;
@@ -100,11 +101,11 @@ public class Token extends AppCompatActivity {
                 }
             }
         });
-
-        getToken();
     }
 
-    public void getToken(){ //디바이스 토큰 값을 받아오는 함수입니다!
+    public void getToken(){//디바이스 토큰 값을 받아오는 함수입니다!
+        fDatabase = FirebaseDatabase.getInstance();
+
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>(){
 
@@ -120,7 +121,10 @@ public class Token extends AppCompatActivity {
                         //생성된 디바이스 토큰 값을 데이터베이스에 저장합니다!
                         Map<String, String> PushToken = new HashMap<>();
                         PushToken.put("Token",token);
-                        fStore.collection("users").document("userId").set(PushToken); //저장 위치 수정 필요
+
+                        DatabaseReference reference = fDatabase.getReference().child("users");
+                        reference.push().child("Token").setValue(token);
+                        //    reference.push().child("Email").setValue("1234@123.com");
                     }
                 });
     }
