@@ -40,3 +40,10 @@
 <img width="742" alt="7" src="https://user-images.githubusercontent.com/79956770/119494545-60b5b100-bd9c-11eb-8812-53958b6c19b5.PNG">
 <img width="480" alt="8" src="https://user-images.githubusercontent.com/79956770/119494552-63180b00-bd9c-11eb-8f4e-f6c9b4fe1189.PNG">
 <br><br>
+201721191 이현호 - CameraActivity <br><br>
+<img src="https://github.com/LeeHyunHo270/Images/blob/main/05-25-1.png?raw=true" width="850">
+<img src="https://github.com/LeeHyunHo270/Images/blob/main/05-25-2.png?raw=true" width="850">
+<img src="https://github.com/LeeHyunHo270/Images/blob/main/05-25-3.png?raw=true" width="850">
+<img src="https://github.com/LeeHyunHo270/Images/blob/main/05-25-4.png?raw=true" width="850">
+<img src="https://github.com/LeeHyunHo270/Images/blob/main/05-25-5.png?raw=true" width="850">
+<img src="https://github.com/LeeHyunHo270/Images/blob/main/05-25-6.png?raw=true" width="850">
