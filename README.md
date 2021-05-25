@@ -20,9 +20,9 @@
 <img src="https://user-images.githubusercontent.com/79952145/119448967-f8031000-bd6c-11eb-98bd-224a5b27c0f9.png">
 <br><br>
 <b>201821058 안준영</b><br>
-<img src=""><br>
-<img src=""><br>
-<img src=""><br>
-<img src=""><br>
-<img src=""><br>
+<img src="https://user-images.githubusercontent.com/79949843/119486950-c7829c80-bd93-11eb-889d-c35319cbdf36.PNG"><br>
+<img src="https://user-images.githubusercontent.com/79949843/119486952-c8b3c980-bd93-11eb-8d8d-0ba6e2397531.PNG"><br>
+<img src="https://user-images.githubusercontent.com/79949843/119486962-cbaeba00-bd93-11eb-9e48-98961c7e029d.PNG"><br>
+<img src="https://user-images.githubusercontent.com/79949843/119486966-cc475080-bd93-11eb-8e20-bcf6a377aae0.PNG"><br>
+<img src="https://user-images.githubusercontent.com/79949843/119486969-cd787d80-bd93-11eb-92a5-a047a56379ca.PNG"><br>
 <br><br>
