@@ -1,5 +1,4 @@
 # Team_Project_share_file
-<img width="783" alt="진도표1번" src="https://user-images.githubusercontent.com/79956770/119484931-7a053000-bd91-11eb-9c85-cab97c311cec.PNG">
 <br>
 201721141 김규식 <br><br>
 <img src="https://github.com/demasialol/Team_Project_HW/blob/master/1.png?raw=true" width="900">
