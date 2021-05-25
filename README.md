@@ -30,7 +30,7 @@
 <img src="https://user-images.githubusercontent.com/79949843/119489397-9c4d7c80-bd96-11eb-8cad-ed7bf4fd95c9.PNG"><br>
 <img src="https://user-images.githubusercontent.com/79949843/119489997-42998200-bd97-11eb-9907-7338cd81a067.PNG"><br>
 <br><br>
-201721185 윤효묵 - UI <br>
+201721185 윤효묵 - UI <br><br>
 <img width="780" alt="1" src="https://user-images.githubusercontent.com/79956770/119494502-55fb1c00-bd9c-11eb-8540-c0d600f08d4c.PNG">
 <img width="780" alt="2" src="https://user-images.githubusercontent.com/79956770/119494511-58f60c80-bd9c-11eb-917b-65541c0a5242.PNG">
 <img width="781" alt="3" src="https://user-images.githubusercontent.com/79956770/119494516-5a273980-bd9c-11eb-98a4-e85457f3c238.PNG">
