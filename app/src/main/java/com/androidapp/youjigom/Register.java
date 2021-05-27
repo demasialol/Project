@@ -170,7 +170,8 @@ public class Register extends AppCompatActivity {
                                 }
                             });
 
-                            DatabaseReference reference = firebaseDatabase.getReference().child("fullName");
+                            DatabaseReference reference = firebaseDatabase.getReference().child("users").child("fullName");
+
                             reference.push().setValue(fullName);
                             reference.push().child("country").setValue(country);
 
@@ -185,9 +186,6 @@ public class Register extends AppCompatActivity {
                         }
                     }
                 });
-
-                Token token = new Token();
-                token.getToken();
             }
         });
 

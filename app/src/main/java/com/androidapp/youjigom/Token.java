@@ -122,8 +122,8 @@ public class Token extends AppCompatActivity {
                         Map<String, String> PushToken = new HashMap<>();
                         PushToken.put("Token",token);
 
-                        DatabaseReference reference = fDatabase.getReference().child("users").child("fullName");
-                        reference.push().child("Token").setValue(token);
+                        DatabaseReference reference = fDatabase.getReference().child("users");
+                        reference.child("fullName").push().child("Token").setValue(token);
                         //    reference.push().child("Email").setValue("1234@123.com");
                     }
                 });
