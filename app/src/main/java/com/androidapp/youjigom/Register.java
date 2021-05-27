@@ -106,9 +106,6 @@ public class Register extends AppCompatActivity {
                 final String phone    = mPhone.getText().toString();
                 final String country = mCountry.getText().toString().trim();
 
-                Token token = new Token();
-                token.getToken();
-
                 if(TextUtils.isEmpty(email)){
                     mEmail.setError("Email is Required.");
                     return;
@@ -175,6 +172,8 @@ public class Register extends AppCompatActivity {
 
                             databaseReference.child("users").push().setValue(fullName);
                             databaseReference.child("users").child("country").push().setValue(country);
+                            Token token = new Token();
+                            token.getToken();
                             startActivity(new Intent(getApplicationContext(),Token.class));
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
 

@@ -117,28 +117,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add a marker in Sydney and move the camera
         String[][] locations = {
 
-                {"40.0424870042855", "116.38425286915037", "베이징"},
-                {"35.74306540022329", "139.77245318272045", "도쿄"},
-                {"37.557667", "126.926546", "서울시"}
+                {"39.09843569786831", "-77.03655778803672", "미국"},
+                {"51.5144591527327", "-0.12975831845500382", "영국"},
+                {"48.88028742149057", "2.3474012992212248", "프랑스"},
+                {"-24.522055716521134", "28.47810742951559", "남아프리카공화국"},
+                {"41.95902295384582", "12.711770438185214", "이탈리아"},
+                {"23.753324485943654", "46.07277628960479", "사우디아라비아"},
+                {"22.964344723026613", "79.90706558759162", "인도"},
+                {"62.26194541591081", "98.83211815684011", "러시아"},
+                {"24.253291376171024", "-102.43459619514199", "멕시코"},
+                {"-8.295766465239065", "-55.799366138407", "브라질"},
+                {"-35.166365771070495", "-65.12564218853217", "아르헨티나"},
+                {"40.0424870042855", "116.38425286915037", "중국"},
+                {"35.74306540022329", "139.77245318272045", "일본"},
+                {"37.557667", "126.926546", "대한민국"}
 
         };
-        for (int i = 0; i < 3; i++) {
-            // 위치 설정
-            double lat = Double.parseDouble(locations[i][0]);
-            double lon = Double.parseDouble(locations[i][1]);
-            LatLng latLng = new LatLng(lat, lon);
-            //LatLng latLng = new LatLng(37.557667, 126.926546);
+        for (int x = 0; x < 14; x++) {
+            for (int y = 0; y < 14; ) {
+                if (locations[x][2].equals(locations[y][2])) {
+                    // 위치 설정
+                    double lat = Double.parseDouble(locations[x][0]);
+                    double lon = Double.parseDouble(locations[x][1]);
+                    LatLng latLng = new LatLng(lat, lon);
+                    //LatLng latLng = new LatLng(37.557667, 126.926546);
 
-            // 카메라를 설정 위치로 옮긴다
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            // 카메라 줌 정도를 설정한다
-            googleMap.moveCamera(CameraUpdateFactory.zoomTo(10));
-            //구글 맵에 표시할 마커에 대한 옵션 설정
-            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(locations[i][2]);
-            // 마커 생성
-            googleMap.addMarker(markerOptions);
+                    // 카메라를 설정 위치로 옮긴다
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    //구글 맵에 표시할 마커에 대한 옵션 설정
+                    MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(locations[x][2]);
+                    // 마커 생성
+                    googleMap.addMarker(markerOptions);
+                    y++;
+                } else y++;
+            }
         }
-        googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        // 카메라 줌 정도를 설정한다
+        googleMap.moveCamera(CameraUpdateFactory.zoomTo(0));
 
         googleMap.setOnMarkerClickListener(this::OnMarkerClick);
 

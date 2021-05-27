@@ -41,6 +41,11 @@
             android:label="@string/title_activity_maps2">
         </activity>
 
+        <activity
+            android:name=".UserInfo"
+            android:label="UserInfo List">
+        </activity>
+
         <activity android:name=".EditProfile"/>
         <activity android:name=".Login" />
         <activity android:name=".Register">
