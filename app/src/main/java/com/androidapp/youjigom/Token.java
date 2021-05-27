@@ -119,11 +119,11 @@ public class Token extends AppCompatActivity {
                         String token = task.getResult();
 
                         //생성된 디바이스 토큰 값을 데이터베이스에 저장합니다!
-                        Map<String, String> PushToken = new HashMap<>();
-                        PushToken.put("Token",token);
+                    //    Map<String, String> PushToken = new HashMap<>();
+                    //    PushToken.put("Token",token);
 
-                        DatabaseReference reference = fDatabase.getReference().child("users");
-                        reference.child("fullName").push().child("Token").setValue(token);
+                    //    DatabaseReference reference = fDatabase.getReference().child("users");
+                    //    reference.child("fullName").push().child("Token").setValue(token);
                         //    reference.push().child("Email").setValue("1234@123.com");
                     }
                 });

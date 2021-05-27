@@ -47,6 +47,7 @@ public class Register extends AppCompatActivity {
     ProgressBar progressBar;
     FirebaseFirestore fStore;
     String userID;
+    FirebaseDatabase fDatabase;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
@@ -170,13 +171,30 @@ public class Register extends AppCompatActivity {
                                 }
                             });
 
-                            DatabaseReference reference = firebaseDatabase.getReference().child("users").child("fullName");
+                            fDatabase = FirebaseDatabase.getInstance();
 
-                            reference.push().setValue(fullName);
-                            reference.push().child("country").setValue(country);
+                            FirebaseMessaging.getInstance().getToken()
+                                    .addOnCompleteListener(new OnCompleteListener<String>(){
 
-                            Token token = new Token();
-                            token.getToken();
+                                        @Override
+                                        public void onComplete(@NonNull Task<String> task) {
+                                            if (!task.isSuccessful()){
+                                                Log.w("tag", "failed", task.getException());
+                                                return;
+                                            }
+                                            //디바이스 토큰을 받아옵니다!
+                                            String token = task.getResult();
+
+                                            Map<String, Object> data = new HashMap<>();
+                                            data.put("fullName", fullName);
+                                            data.put("country", country);
+                                            data.put("Token", token);
+
+                                            DatabaseReference reference = fDatabase.getReference().child("users");
+                                            reference.child(fullName).setValue(data);
+                                        }
+                                    });
+
                             startActivity(new Intent(getApplicationContext(),Token.class));
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
 
