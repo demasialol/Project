@@ -1,225 +1,305 @@
 package com.androidapp.youjigom;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
-import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private static final int REQUEST_IMAGE_CAPTURE = 672;
-    private String imageFilePath;
-    private Uri photoUri;
+    private static final String TAG = "KNLBDC";
+
+    private Boolean isPermission = true;
+
+    private static final int PICK_FROM_ALBUM = 1;
+    private static final int PICK_FROM_CAMERA = 2;
+
+    private Boolean isCamera = false;
+    private File tempFile;
+    Button upload;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info__list_);
+        setContentView(R.layout.activity_get_image);
+
+        upload = findViewById(R.id.upload);
+        upload.setVisibility(View.INVISIBLE);
 
 
-        // 권한 체크 - 일정 android 버전에서 어플들을 이용하는데 필요하다
-        TedPermission.with(getApplicationContext()) //context해주는것
-                .setPermissionListener(permissionListener) //권한 체크에 관련된 인터페이스를 호출한다
-                .setRationaleMessage("카메라 권한이 필요합니다.") //권한 사용을 허락했을 때 나오는 메세지
-                .setDeniedMessage("거부하셨습니다.") //권한 사용을 거부했을 때 나오는 메세지
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                // 안드로이드 외부저장소와 카메라 사용에 대한 권한을 지정
-                .check(); //실제 권한 체크는 .check()에서 이뤄짐
+        tedPermission();
 
-
-        //버튼 클릭시 작동할 작업을 지정하는 온클릭 리스너
-        findViewById(R.id.btn_capture).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnGallery).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                //버튼클릭 정상확인
-                Toast.makeText(getApplicationContext(), "버튼눌리긴함",Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                // 권한 허용에 동의하지 않았을 경우 토스트를 띄웁니다.
+                if(isPermission) goToAlbum();
+                else Toast.makeText(view.getContext(), getResources().getString(R.string.permission_2), Toast.LENGTH_LONG).show();
 
-                // 외부저장소를 사용하는 카메라 촬영 화면으로 전환해줌
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            }
+        });
 
-                //인텐트를 수신할 앱이 있는지 확인하기 위해 Intent 객체에서 resolveActivity()를 호출한다.
-                // 결과가 null이 아닌 경우, 인텐트를 처리할 수 있는 앱이 최소한 하나는 있다는 뜻
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    File photoFile = null;  // 촬영한 사진을 저장할 파일 생성
-                    try {
-                        photoFile = createImageFile(); //임시로 사용할 캐시폴더 경로의 파일 사용
-                    } catch (IOException e) {
+        findViewById(R.id.btnCamera).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 권한 허용에 동의하지 않았을 경우 토스트를 띄웁니다.
+                if(isPermission)  takePhoto();
+                else Toast.makeText(view.getContext(), getResources().getString(R.string.permission_2), Toast.LENGTH_LONG).show();
 
-                    }
-                    //파일이 정상적으로 생성되었으면 진행
-                    if (photoFile != null) {
-                        //URI 가져오기
-                        photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile);
-                        //인텐트에 이미지가 저장될 URI담기
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                        //인텐트 실행
-                        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            Toast.makeText(this, "취소 되었습니다.", Toast.LENGTH_SHORT).show();
+
+            if (tempFile != null) {
+                if (tempFile.exists()) {
+                    if (tempFile.delete()) {
+                        Log.e(TAG, tempFile.getAbsolutePath() + " 삭제 성공");
+                        tempFile = null;
                     }
                 }
+            }
+
+            return;
+        }
+
+        if (requestCode == PICK_FROM_ALBUM) {
+
+            Uri photoUri = data.getData();
+            Log.d(TAG, "PICK_FROM_ALBUM photoUri : " + photoUri);
+
+            Cursor cursor = null;
+
+            try {
+
+                /*
+                 *  Uri 스키마를
+                 *  content:/// 에서 file:/// 로  변경한다.
+                 */
+                String[] proj = {MediaStore.Images.Media.DATA};
+
+                assert photoUri != null;
+                cursor = getContentResolver().query(photoUri, proj, null, null, null);
+
+                assert cursor != null;
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                cursor.moveToFirst();
+
+                tempFile = new File(cursor.getString(column_index));
+
+                Log.d(TAG, "tempFile Uri : " + Uri.fromFile(tempFile));
+
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+
+            setImage();
+
+        } else if (requestCode == PICK_FROM_CAMERA) {
+
+            setImage();
+
+        }
+    }
+
+    /**
+     *  앨범에서 이미지 가져오기
+     */
+    private void goToAlbum() {
+        isCamera = false;
+
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+        startActivityForResult(intent, PICK_FROM_ALBUM);
+    }
+
+
+    /**
+     *  카메라를 이미지 가져오기
+     */
+    private void takePhoto() {
+        isCamera = true;
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        try {
+            tempFile = createImageFile();
+        } catch (IOException e) {
+            Toast.makeText(this, "이미지 처리 오류! 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            finish();
+            e.printStackTrace();
+        }
+        if (tempFile != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+
+                Uri photoUri = FileProvider.getUriForFile(this,
+                        "com.androidapp.youjigom", tempFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(intent, PICK_FROM_CAMERA);
+
+            } else {
+
+                Uri photoUri = Uri.fromFile(tempFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(intent, PICK_FROM_CAMERA);
+
+            }
+        }
+    }
+
+    /**
+     *  폴더 및 파일 만들기
+     */
+    private File createImageFile() throws IOException {
+
+        // 이미지 파일 이름 ( blackJin_{시간}_ )
+        String timeStamp = new SimpleDateFormat("HHmmss").format(new Date());
+        String imageFileName = "KNLBDC_" + timeStamp + "_";
+
+        // 이미지가 저장될 파일 주소 ( blackJin )
+        File storageDir = new File(Environment.getExternalStorageDirectory() + "/KNLBDC/");
+        if (!storageDir.exists()) storageDir.mkdirs();
+
+        // 빈 파일 생성
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        Log.d(TAG, "createImageFile : " + image.getAbsolutePath());
+
+        return image;
+    }
+
+    /**
+     *  tempFile 을 bitmap 으로 변환 후 ImageView 에 설정한다.
+     */
+    private void setImage() {
+        ImageView imageView = findViewById(R.id.imageView);
+
+        ImageResizeUtils.resizeFile(tempFile, tempFile, 1280, isCamera);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+        Log.d(TAG, "setImage : " + tempFile.getAbsolutePath());
+
+        imageView.setImageBitmap(originalBm);
+        upload.setVisibility(View.VISIBLE);
+
+        findViewById(R.id.upload).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UploadImage();
+                //UploadImage.geturi(imguri, imgname);
+            }
+        });    
+
+    }
+
+    private void UploadImage(){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        ImageView imageView = findViewById(R.id.imageView);
+
+        Uri imguri = Uri.parse(tempFile.getAbsolutePath());
+        String imgname = (tempFile.getName());
+
+        StorageReference ImageRef = storageRef.child(imgname);
+        StorageReference UriRef = storageRef.child(String.valueOf(imguri));
+
+        ImageRef.getName().equals(UriRef.getName());    // true
+        ImageRef.getPath().equals(UriRef.getPath());    // false
+
+        imageView.setDrawingCacheEnabled(true);
+        imageView.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = ImageRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(getApplicationContext(), "전송성공!", Toast.LENGTH_LONG).show();
             }
         });
 
 
+
     }
 
-    //이미지가 저장될 캐쉬 파일을 만듬
-    private File createImageFile() throws IOException {
-        // 데이터 이름의 중복으로 인한 충돌을 막기위해 SimpleDateFormat을 이용하여 어플이 동작할 때의
-        // 시간을 기록 변수에 기록
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        //임시로 사용될 파일이름을 만들어줌
-        String imageFileName = "TEST_" + timeStamp + "_";
-        //외부 저장소를 사용하는 것이기 때문에 다른 어플과 충돌을 막기 위하여 getExternalFilesDir이용
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        //실제 임시 파일이름 지정
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
-        // 파일 저장 : ACTION_VIEW 인텐트에 사용할 경로
-        imageFilePath = image.getAbsolutePath();
-        return image;
-    }
+    /**
+     *  권한 설정
+     */
+    private void tedPermission() {
 
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // 권한 요청 성공
+                isPermission = true;
 
-    @Override
-    //메인화면-카메라촬영-촬영한 사진 순으로 인텐트가 전환하기 때문에 onActivityResult사용
-    //int requestCode, int resultCode, Intent data는 onActivityResult사용시 따라오는 변수
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            //휴대폰 안에 파일 형태로 저장된 이미지를 Bitmap으로 만들 때 사용합니다.
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
-
-            //Exif는 Exchangedable image file format의 줄임말로 사진정보 라고 알아두면 편하다
-            ExifInterface exif = null;
-
-            try {
-                //exif에 파일을 저장함
-                exif = new ExifInterface(imageFilePath);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
 
-            /* 핸드폰 내부의 카메라를 사용하여 촬영을 하고 사진정보를 받아와 인텐트에 보여줄 때
-               보여주고자 하는 사진이 회전되어 의도와는 다르게 표시되는 오류나 사진자체를 가로로 찍을 때
-               이미지 회전에 대한 역활을 수행하기 위해서 2개의 변수를 선언해 준다.*/
-            int exifOrientation; //회전된 각도
-            int exifDegree; // exifOrientation의 값을 받음
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                // 권한 요청 실패
+                isPermission = false;
 
-            if (exif != null) {
-                // TAG_ORIENTATION, ORIENTATION_NORMAL 는 이미지가 얼마나 회전되었는지를 나타낸다.
-                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                exifDegree = exifOrientationToDegress(exifOrientation);
-            } else {
-                exifDegree = 0;
             }
+        };
 
-            String result = "";
-            // 데이터 이름의 중복으로 인한 충돌을 막기위해 SimpleDateFormat을 이용하여 어플이 동작할 때의 시간을 기록
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HHmmss", Locale.getDefault());
-            // 데이터 이름의 중복으로 인한 충돌을 막기위해 SimpleDateFormat을 이용하여 어플이 동작할 때의 날짜을 기록
-            Date curDate = new Date(System.currentTimeMillis());
-            //날짜와 시간을 조합하여 저장할 파일의 이름을 만들어 준다
-            String filename = formatter.format(curDate);
-            // getExternalStoragePublicDirectory는 공개 디렉터리를 뜻한다. 파일을 저장할 내부 폴더를
-            // 공개 디렉터리에 속하는 NEWFOLDER라는 이름의 폴더로 설정하는 구문이다
-            String strFolderName = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES)
-                    + File.separator + "NEWFOLDER" + File.separator;
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage(getResources().getString(R.string.permission_2))
+                .setDeniedMessage(getResources().getString(R.string.permission_1))
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .check();
 
-            //위의 strFolderName의 경로/이름을 가진 폴더를 지정하는 구문이다.
-            File file = new File(strFolderName);
-            //디렉토리가 존재하지 않을 경우, 상위 디렉토리까지 생성
-            if (!file.exists())
-                file.mkdirs();
-
-            // 인스턴스를 생성하여 f 변수에 저장될 이미지 경로/이름을 지정하는 구문이다.
-            File f = new File(strFolderName + "/" + filename + ".png");
-            result = f.getPath();
-
-            //자바의 입출력 구문이다.
-            FileOutputStream fOut = null;
-            try {
-                //FileOutputStream로 지정한 위에서 생성한 File 인스턴스의 변수f의 파일을 생성
-                fOut = new FileOutputStream(f);
-                // FileOutputStream 객체 생성시 파일 경로가 유효하지 않으면 FileNotFoundException 발생
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                result = "Save Error fOut";
-            }
-
-            // 비트맵 사진 폴더 경로에 저장
-            rotate(bitmap, exifDegree).compress(Bitmap.CompressFormat.PNG, 70, fOut);
-            try {
-                fOut.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // 이미지 뷰에 비트맵을 set하여 이미지 표현
-            ((ImageView) findViewById(R.id.iv_result)).setImageBitmap(rotate(bitmap, exifDegree));
-
-        }
     }
-
-    //exifOrientation의 값을 exifdegree에 리턴
-    private int exifOrientationToDegress(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            return 90;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            return 180;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            return 270;
-        }
-        return 0;
-    }
-    //입력받은 degree값을 기반으로 원래 보여주고자 했던 이미지로 회전시켜주는 구문
-    private Bitmap rotate(Bitmap bitmap, float degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
-
-
-    //권한 허용or거부에 따라서 toast 메세지를 출력하는 함수에 대한 코드
-    PermissionListener permissionListener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-            Toast.makeText(getApplicationContext(), "권한이 허용됨",Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-            Toast.makeText(getApplicationContext(), "권한이 거부됨",Toast.LENGTH_SHORT).show();
-        }
-    };
-
 
 }

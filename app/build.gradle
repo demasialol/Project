@@ -5,7 +5,7 @@ plugins {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "30.0.3"
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "com.androidapp.youjigom"
@@ -28,6 +28,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
 
 dependencies {
 

@@ -31,6 +31,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(view.getContext(), CameraActivity.class);
+                view.getContext().startActivity(intent);
 
             }
         });

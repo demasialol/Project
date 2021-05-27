@@ -45,6 +45,7 @@
             android:name=".UserInfo"
             android:label="UserInfo List">
         </activity>
+        <activity android:name=".CameraActivity"></activity>
 
         <activity android:name=".EditProfile"/>
         <activity android:name=".Login" />
@@ -57,10 +58,6 @@
         </activity>
 
         <activity android:name=".MainActivity">
-        </activity>
-
-        <activity android:name=".CameraActivity">
-
         </activity>
 
         <provider
