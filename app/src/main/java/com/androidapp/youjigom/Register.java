@@ -1,5 +1,6 @@
 package com.androidapp.youjigom;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,11 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,26 +39,30 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Register extends AppCompatActivity {
     public static final String TAG = "TAG";
-    EditText mFullName,mEmail,mPassword,mPhone,mCountry;
+    EditText mFullName,mEmail,mPassword,mPhone;
     Button mRegisterBtn;
-    TextView mLoginBtn;
+    TextView mLoginBtn,mCountry;
     FirebaseAuth fAuth;
     ProgressBar progressBar;
     FirebaseFirestore fStore;
-    String userID;
+    String userID,CountryInf;
+    Button choose;
+
+    private RadioGroup radioGroup;
+    int state;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
-
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference conditionRef = mRootRef.child("text");
-
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -64,11 +72,6 @@ public class Register extends AppCompatActivity {
 
         return result;
     }
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +90,45 @@ public class Register extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         progressBar = findViewById(R.id.progressBar);
 
+        final int[] selectedItem = {0};
 
+        choose = (Button) findViewById(R.id.choose);
+        choose.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                final String[] items = new String[]{"Korea" , "Japan", "America", "Thailand"};
+                AlertDialog.Builder dialog = new AlertDialog.Builder(Register.this);
+                dialog.setTitle("Choose your country")
+                        .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                               selectedItem[0] = which;
+                               mCountry.setText(items[selectedItem[0]]);
 
+                            }
+                        })
+                        .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                               Toast.makeText(Register.this
+                                        ,items[selectedItem[0]]
+                                        ,Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNeutralButton("back", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(Register.this
+                                ,"Canceled"
+                                ,Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                dialog.create();
+                dialog.show();
+
+            }
+        });
 
 
         if(fAuth.getCurrentUser() != null){

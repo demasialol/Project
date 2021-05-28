@@ -110,26 +110,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
-    <EditText
-        android:id="@+id/country"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/black"
-        android:ems="10"
-        android:hint="Country"
-        android:inputType="textPhonetic"
-        android:padding="10dp"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
-
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="0dp"
@@ -167,6 +147,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createText"
         app:layout_constraintVertical_bias="0.26" />
+
+
+    <TextView
+        android:id="@+id/country"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="120dp"
+        android:layout_marginBottom="16dp"
+        android:ems="10"
+        android:hint="Country"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone" />
+
+    <Button
+        android:id="@+id/choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Country"
+        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/country"
+        app:layout_constraintTop_toBottomOf="@+id/phone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
