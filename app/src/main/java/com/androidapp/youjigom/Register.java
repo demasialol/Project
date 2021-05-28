@@ -170,8 +170,11 @@ public class Register extends AppCompatActivity {
                                 }
                             });
 
-                            databaseReference.child("users").push().setValue(fullName);
-                            databaseReference.child("users").child("country").push().setValue(country);
+                            DatabaseReference reference = firebaseDatabase.getReference().child("users").child("fullName");
+
+                            reference.push().setValue(fullName);
+                            reference.push().child("country").setValue(country);
+
                             Token token = new Token();
                             token.getToken();
                             startActivity(new Intent(getApplicationContext(),Token.class));
@@ -183,11 +186,7 @@ public class Register extends AppCompatActivity {
                         }
                     }
                 });
-
             }
-
-        //    Token token = new Token();
-        //    token.getToken(); //토큰 생성
         });
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
