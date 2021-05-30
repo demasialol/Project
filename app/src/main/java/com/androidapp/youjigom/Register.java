@@ -48,6 +48,7 @@ public class Register extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userID;
     FirebaseDatabase fDatabase;
+    String Token;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
@@ -173,6 +174,10 @@ public class Register extends AppCompatActivity {
 
                             fDatabase = FirebaseDatabase.getInstance();
 
+                            DatabaseReference reference = fDatabase.getReference();
+
+                            Map<String, Object> childUpdates=new HashMap<>();
+
                             FirebaseMessaging.getInstance().getToken()
                                     .addOnCompleteListener(new OnCompleteListener<String>(){
 
@@ -182,16 +187,18 @@ public class Register extends AppCompatActivity {
                                                 Log.w("tag", "failed", task.getException());
                                                 return;
                                             }
+
+                                            Map<String, Object> postValues=null;
+
                                             //디바이스 토큰을 받아옵니다!
                                             String token = task.getResult();
+                                            Token = token;
 
-                                            Map<String, Object> data = new HashMap<>();
-                                            data.put("fullName", fullName);
-                                            data.put("country", country);
-                                            data.put("Token", token);
+                                            com.androidapp.youjigom.FirebasePost post=new com.androidapp.youjigom.FirebasePost(Token, fullName, country);
+                                            postValues=post.toMap();
 
-                                            DatabaseReference reference = fDatabase.getReference().child("users");
-                                            reference.child(fullName).setValue(data);
+                                            childUpdates.put("/users/"+fullName,postValues);
+                                            reference.updateChildren(childUpdates);
                                         }
                                     });
 
