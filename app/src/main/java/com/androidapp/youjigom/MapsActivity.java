@@ -157,7 +157,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googleMap.moveCamera(CameraUpdateFactory.zoomTo(0));
 
         googleMap.setOnMarkerClickListener(this::OnMarkerClick);
-
     }
 
     public boolean OnMarkerClick(Marker marker) {

@@ -1,7 +1,5 @@
 package com.androidapp.youjigom;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -37,14 +35,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Register extends AppCompatActivity {
     public static final String TAG = "TAG";
-    EditText mFullName,mEmail,mPassword,mPhone;
-    TextView mCountry;
+    EditText mFullName,mEmail,mPassword,mPhone,mCountry;
     Button mRegisterBtn;
     TextView mLoginBtn;
     FirebaseAuth fAuth;
@@ -52,14 +48,9 @@ public class Register extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userID;
     FirebaseDatabase fDatabase;
-    String Token;
-    Button choose;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
-
-    static ArrayList<String> arrayIndex=new ArrayList<String>();
-    static ArrayList<String> arrayData=new ArrayList<String>();
 
 
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -74,6 +65,10 @@ public class Register extends AppCompatActivity {
 
         return result;
     }
+
+
+
+
 
 
     @Override
@@ -92,46 +87,6 @@ public class Register extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         progressBar = findViewById(R.id.progressBar);
-
-        final int[] selectedItem = {0};
-
-        choose = (Button) findViewById(R.id.choose);
-        choose.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                final String[] items = new String[]{"Korea" , "Japan", "America", "Thailand"};
-                AlertDialog.Builder dialog = new AlertDialog.Builder(Register.this);
-                dialog.setTitle("Choose your country")
-                        .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                selectedItem[0] = which;
-                                mCountry.setText(items[selectedItem[0]]);
-
-                            }
-                        })
-                        .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                Toast.makeText(Register.this
-                                        ,items[selectedItem[0]]
-                                        ,Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNeutralButton("back", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(Register.this
-                                        ,"Canceled"
-                                        ,Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                dialog.create();
-                dialog.show();
-
-            }
-        });
 
 
 
@@ -218,10 +173,6 @@ public class Register extends AppCompatActivity {
 
                             fDatabase = FirebaseDatabase.getInstance();
 
-                            DatabaseReference reference = fDatabase.getReference();
-
-                            Map<String, Object> childUpdates=new HashMap<>();
-
                             FirebaseMessaging.getInstance().getToken()
                                     .addOnCompleteListener(new OnCompleteListener<String>(){
 
@@ -231,18 +182,16 @@ public class Register extends AppCompatActivity {
                                                 Log.w("tag", "failed", task.getException());
                                                 return;
                                             }
-
-                                            Map<String, Object> postValues=null;
-
                                             //디바이스 토큰을 받아옵니다!
                                             String token = task.getResult();
-                                            Token = token;
 
-                                            com.androidapp.youjigom.FirebasePost post=new com.androidapp.youjigom.FirebasePost(Token, fullName, country);
-                                            postValues=post.toMap();
+                                            Map<String, Object> data = new HashMap<>();
+                                            data.put("fullName", fullName);
+                                            data.put("country", country);
+                                            data.put("Token", token);
 
-                                            childUpdates.put("/users/"+fullName,postValues);
-                                            reference.updateChildren(childUpdates);
+                                            DatabaseReference reference = fDatabase.getReference().child("users");
+                                            reference.child(fullName).setValue(data);
                                         }
                                     });
 
