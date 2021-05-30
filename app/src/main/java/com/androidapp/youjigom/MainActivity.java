@@ -87,10 +87,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         changeProfileImage = findViewById(R.id.changeProfile);
         Next = findViewById(R.id.Next);
 
-
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        Token token = new Token();
+        token.Read();
 
         DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference conditionRef = mRootRef.child("text");
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-       DocumentReference documentReference = fStore.collection("users").document(userId);
+        DocumentReference documentReference = fStore.collection("users").document(userId);
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -212,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
 
     }
 

@@ -1,5 +1,6 @@
 package com.androidapp.youjigom;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,14 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,28 +39,32 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Register extends AppCompatActivity {
     public static final String TAG = "TAG";
     EditText mFullName,mEmail,mPassword,mPhone;
+    TextView mCountry;
     Button mRegisterBtn;
-    TextView mLoginBtn,mCountry;
+    TextView mLoginBtn;
     FirebaseAuth fAuth;
     ProgressBar progressBar;
     FirebaseFirestore fStore;
-    String userID,CountryInf;
+    String userID;
+    FirebaseDatabase fDatabase;
+    String Token;
     Button choose;
-
-    private RadioGroup radioGroup;
-    int state;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
+    static ArrayList<String> arrayIndex=new ArrayList<String>();
+    static ArrayList<String> arrayData=new ArrayList<String>();
+
+
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference conditionRef = mRootRef.child("text");
+
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -72,6 +74,7 @@ public class Register extends AppCompatActivity {
 
         return result;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +105,8 @@ public class Register extends AppCompatActivity {
                         .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                               selectedItem[0] = which;
-                               mCountry.setText(items[selectedItem[0]]);
+                                selectedItem[0] = which;
+                                mCountry.setText(items[selectedItem[0]]);
 
                             }
                         })
@@ -111,7 +114,7 @@ public class Register extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                               Toast.makeText(Register.this
+                                Toast.makeText(Register.this
                                         ,items[selectedItem[0]]
                                         ,Toast.LENGTH_SHORT).show();
                             }
@@ -120,8 +123,8 @@ public class Register extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Toast.makeText(Register.this
-                                ,"Canceled"
-                                ,Toast.LENGTH_SHORT).show();
+                                        ,"Canceled"
+                                        ,Toast.LENGTH_SHORT).show();
                             }
                         });
                 dialog.create();
@@ -129,6 +132,9 @@ public class Register extends AppCompatActivity {
 
             }
         });
+
+
+
 
 
         if(fAuth.getCurrentUser() != null){
@@ -210,13 +216,36 @@ public class Register extends AppCompatActivity {
                                 }
                             });
 
-                            DatabaseReference reference = firebaseDatabase.getReference().child("users").child("fullName");
+                            fDatabase = FirebaseDatabase.getInstance();
 
-                            reference.push().setValue(fullName);
-                            reference.push().child("country").setValue(country);
+                            DatabaseReference reference = fDatabase.getReference();
 
-                            Token token = new Token();
-                            token.getToken();
+                            Map<String, Object> childUpdates=new HashMap<>();
+
+                            FirebaseMessaging.getInstance().getToken()
+                                    .addOnCompleteListener(new OnCompleteListener<String>(){
+
+                                        @Override
+                                        public void onComplete(@NonNull Task<String> task) {
+                                            if (!task.isSuccessful()){
+                                                Log.w("tag", "failed", task.getException());
+                                                return;
+                                            }
+
+                                            Map<String, Object> postValues=null;
+
+                                            //디바이스 토큰을 받아옵니다!
+                                            String token = task.getResult();
+                                            Token = token;
+
+                                            com.androidapp.youjigom.FirebasePost post=new com.androidapp.youjigom.FirebasePost(Token, fullName, country);
+                                            postValues=post.toMap();
+
+                                            childUpdates.put("/users/"+fullName,postValues);
+                                            reference.updateChildren(childUpdates);
+                                        }
+                                    });
+
                             startActivity(new Intent(getApplicationContext(),Token.class));
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
 

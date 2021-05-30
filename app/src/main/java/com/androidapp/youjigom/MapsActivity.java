@@ -42,7 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FirebaseUser user;
     ImageView profileImage;
     StorageReference storageReference;
-    Button profile;
+    Button profile, reregister;
 
     private GoogleMap mMap;
 
@@ -61,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         email = findViewById(R.id.profileEmail);
         country = findViewById(R.id.profileCountry);
         MyCountry = findViewById(R.id.MyCountry);
+        reregister = findViewById(R.id.reregister);
 
 
         fAuth = FirebaseAuth.getInstance();
