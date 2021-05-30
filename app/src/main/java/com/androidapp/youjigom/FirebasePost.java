@@ -1,7 +1,6 @@
 package com.androidapp.youjigom;
 
-<<<<<<< HEAD
-=======
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
->>>>>>> origin/master
+
 import java.util.HashMap;
 import java.util.Map;
 
